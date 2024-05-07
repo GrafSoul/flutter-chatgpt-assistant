@@ -19,6 +19,12 @@ class ChatPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onPressed: () {
+              chatController.showBottomSheet(context);
+            },
+          ),
+          IconButton(
             icon: Obx(() => Icon(
                   chatController.isListening.value ? Icons.mic : Icons.mic_off,
                   color: Colors.white,
@@ -47,6 +53,10 @@ class ChatPage extends StatelessWidget {
                   containerColor: Color.fromRGBO(0, 166, 126, 1),
                   textColor: Colors.white,
                 ),
+                // inputOptions: InputOptions(
+                //   textController: chatController.textController,
+                //   alwaysShowSend: true,
+                // ),
               ),
             ),
           ),

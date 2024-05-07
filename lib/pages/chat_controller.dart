@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
@@ -14,6 +15,7 @@ class ChatController extends GetxController {
   var messages = <ChatMessage>[].obs;
   var typingUsers = <ChatUser>[].obs;
 
+  final TextEditingController textController = TextEditingController();
   final SpeechToText speechToText = SpeechToText();
 
   var speechEnabled = false.obs;
@@ -82,6 +84,7 @@ class ChatController extends GetxController {
     }
 
     typingUsers.remove(gptChatUser);
+    textController.text = '';
     wordsSpoken.value = '';
   }
 
@@ -119,5 +122,40 @@ class ChatController extends GetxController {
   void onSpeechResult(result) {
     wordsSpoken.value = result.recognizedWords;
     confidenceLevel.value = result.confidence;
+
+    textController.text = result.recognizedWords;
+    wordsSpoken.value = result.recognizedWords;
+  }
+
+  void showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.9,
+          child: Container(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            decoration: const BoxDecoration(
+              color: Color(0xFFFEEAD8),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: const Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'This is a modal window with a margin at the top',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
