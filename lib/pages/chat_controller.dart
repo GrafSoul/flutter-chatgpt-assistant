@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ChatController extends GetxController {
-  late final String apiKey;
+  final storage = GetStorage();
+  final apiKey = ''.obs;
   late final OpenAI _openAI;
 
   final ChatUser currentUser = ChatUser(id: '1', firstName: 'John', lastName: 'Doe');
@@ -29,14 +30,22 @@ class ChatController extends GetxController {
 
     initSpeech();
 
-    apiKey = dotenv.get('API_OPENAI_KEY', fallback: 'Unknown');
-    _openAI = OpenAI.instance.build(
-      token: apiKey,
-      baseOption: HttpSetup(
-        receiveTimeout: const Duration(seconds: 5),
-      ),
-      enableLog: true,
-    );
+    apiKey.value = storage.read('apiKey') ?? '';
+
+    if (apiKey.value.isNotEmpty) {
+      _openAI = OpenAI.instance.build(
+        token: apiKey.value,
+        baseOption: HttpSetup(
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+        enableLog: true,
+      );
+    }
+  }
+
+  void saveApiKey(String key) {
+    apiKey.value = key;
+    storage.write('apiKey', key.toString());
   }
 
   Future<void> sendMessage(ChatMessage m) async {
@@ -86,6 +95,18 @@ class ChatController extends GetxController {
     typingUsers.remove(gptChatUser);
     textController.text = '';
     wordsSpoken.value = '';
+
+    update();
+  }
+
+  void autoSendMessage() async {
+    final ChatMessage message = ChatMessage(
+      text: textController.text,
+      user: currentUser,
+      createdAt: DateTime.now(),
+    );
+
+    await sendMessage(message);
   }
 
   void onStatusChanged(String status) {
@@ -115,7 +136,20 @@ class ChatController extends GetxController {
       await speechToText.stop();
       isListening.value = false;
       speechEnabled.value = false;
+      autoSendMessage();
     }
+    update();
+  }
+
+  void clearListening() async {
+    if (isListening.value) {
+      await speechToText.stop();
+      isListening.value = false;
+      speechEnabled.value = false;
+    }
+    textController.text = '';
+    wordsSpoken.value = '';
+    confidenceLevel.value = 0;
     update();
   }
 
@@ -125,32 +159,95 @@ class ChatController extends GetxController {
 
     textController.text = result.recognizedWords;
     wordsSpoken.value = result.recognizedWords;
+    update();
   }
 
-  void showBottomSheet(BuildContext context) {
+  void showBottomSheet(
+    BuildContext context,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.9,
+          widthFactor: 1,
           child: Container(
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             decoration: const BoxDecoration(
-              color: Color(0xFFFEEAD8),
+              color: Color.fromARGB(255, 255, 255, 255),
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            child: const Column(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'This is a modal window with a margin at the top',
-                    style: TextStyle(fontSize: 18),
+                ),
+                Obx(() => SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              isListening.value ? Icons.mic : Icons.mic_off,
+                              color: const Color(0xFF00A67E),
+                              size: 32,
+                            ),
+                            color: const Color(0xFF00A67E),
+                            onPressed: () {
+                              if (isListening.value) {
+                                stopListening();
+                              } else {
+                                startListening();
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Color(0xFF00A67E),
+                              size: 32,
+                            ),
+                            color: const Color(0xFF00A67E),
+                            onPressed: () {
+                              clearListening();
+                            },
+                          ),
+                        ],
+                      ),
+                    )),
+                Obx(
+                  () => Text(
+                    isListening.value
+                        ? "Listening..."
+                        : speechEnabled.value
+                            ? "Tap the microphone to start listening..."
+                            : "Speech not available",
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
+                Obx(
+                  () => Text(
+                    wordsSpoken.value,
+                    style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
+                  ),
+                ),
+                Obx(
+                  () => Visibility(
+                    visible: speechToText.isNotListening && confidenceLevel.value > 0,
+                    child: Text(
+                      "Confidence: ${(confidenceLevel.value * 100).toStringAsFixed(1)}%",
+                      style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w200),
+                    ),
+                  ),
+                )
               ],
             ),
           ),

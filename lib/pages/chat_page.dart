@@ -24,21 +24,16 @@ class ChatPage extends StatelessWidget {
               chatController.showBottomSheet(context);
             },
           ),
-          IconButton(
-            icon: Obx(() => Icon(
-                  chatController.isListening.value ? Icons.mic : Icons.mic_off,
-                  color: Colors.white,
-                )),
-            color: Colors.white,
-            onPressed: () {
-              if (chatController.isListening.value) {
-                chatController.stopListening();
-              } else {
-                chatController.startListening();
-              }
-            },
-          ),
         ],
+        leading: IconButton(
+          icon: const Icon(Icons.vpn_key_outlined, color: Colors.white),
+          onPressed: () {
+            Get.defaultDialog(
+              title: 'Enter API Key',
+              content: ApiKeyInputDialog(chatController),
+            );
+          },
+        ),
       ),
       body: Column(
         children: [
@@ -53,15 +48,44 @@ class ChatPage extends StatelessWidget {
                   containerColor: Color.fromRGBO(0, 166, 126, 1),
                   textColor: Colors.white,
                 ),
-                // inputOptions: InputOptions(
-                //   textController: chatController.textController,
-                //   alwaysShowSend: true,
-                // ),
+                inputOptions: InputOptions(
+                  textController: chatController.textController,
+                  alwaysShowSend: true,
+                ),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class ApiKeyInputDialog extends StatelessWidget {
+  final ChatController chatController = Get.put(ChatController());
+
+  final TextEditingController textController;
+
+  ApiKeyInputDialog(chatController, {super.key})
+      : textController = TextEditingController(text: chatController.apiKey.value);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          controller: textController,
+          decoration: const InputDecoration(labelText: 'API Key'),
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: () {
+            chatController.saveApiKey(textController.text);
+            Get.back();
+          },
+          child: const Text('Save'),
+        )
+      ],
     );
   }
 }
