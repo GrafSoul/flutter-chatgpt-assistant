@@ -5,7 +5,7 @@ import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:get_storage/get_storage.dart';
 
-class ChatController extends GetxController {
+class ChatController extends GetxController with GetSingleTickerProviderStateMixin {
   final storage = GetStorage();
   final apiKey = ''.obs;
   late final OpenAI _openAI;
@@ -15,6 +15,9 @@ class ChatController extends GetxController {
 
   var messages = <ChatMessage>[].obs;
   var typingUsers = <ChatUser>[].obs;
+
+  late AnimationController animationController;
+  late Animation<double> opacityAnimation;
 
   final TextEditingController textController = TextEditingController();
   final SpeechToText speechToText = SpeechToText();
@@ -27,6 +30,13 @@ class ChatController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+
+    opacityAnimation = Tween<double>(begin: 1.0, end: 0.3).animate(animationController);
 
     initSpeech();
 
@@ -41,6 +51,14 @@ class ChatController extends GetxController {
         enableLog: true,
       );
     }
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    // Dispose animation controller
+    animationController.dispose();
+    textController.dispose();
   }
 
   void saveApiKey(String key) {
@@ -120,6 +138,7 @@ class ChatController extends GetxController {
   }
 
   void startListening() async {
+    animationController.repeat(reverse: true);
     if (!isListening.value) {
       isListening.value = true;
       await speechToText.listen(
@@ -132,6 +151,7 @@ class ChatController extends GetxController {
   }
 
   void stopListening() async {
+    animationController.stop();
     if (isListening.value) {
       await speechToText.stop();
       isListening.value = false;
@@ -139,6 +159,14 @@ class ChatController extends GetxController {
       autoSendMessage();
     }
     update();
+  }
+
+  void toggleListening() {
+    if (isListening.value) {
+      stopListening();
+    } else {
+      startListening();
+    }
   }
 
   void clearListening() async {
@@ -162,97 +190,7 @@ class ChatController extends GetxController {
     update();
   }
 
-  void showBottomSheet(
-    BuildContext context,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          widthFactor: 1,
-          child: Container(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 255, 255, 255),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                ),
-                Obx(() => SizedBox(
-                      width: 200,
-                      height: 50,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              isListening.value ? Icons.mic : Icons.mic_off,
-                              color: const Color(0xFF00A67E),
-                              size: 32,
-                            ),
-                            color: const Color(0xFF00A67E),
-                            onPressed: () {
-                              if (isListening.value) {
-                                stopListening();
-                              } else {
-                                startListening();
-                              }
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete,
-                              color: Color(0xFF00A67E),
-                              size: 32,
-                            ),
-                            color: const Color(0xFF00A67E),
-                            onPressed: () {
-                              clearListening();
-                            },
-                          ),
-                        ],
-                      ),
-                    )),
-                Obx(
-                  () => Text(
-                    isListening.value
-                        ? "Listening..."
-                        : speechEnabled.value
-                            ? "Tap the microphone to start listening..."
-                            : "Speech not available",
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ),
-                Obx(
-                  () => Text(
-                    wordsSpoken.value,
-                    style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
-                  ),
-                ),
-                Obx(
-                  () => Visibility(
-                    visible: speechToText.isNotListening && confidenceLevel.value > 0,
-                    child: Text(
-                      "Confidence: ${(confidenceLevel.value * 100).toStringAsFixed(1)}%",
-                      style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w200),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  Animation<double> getOpacityAnimation() {
+    return opacityAnimation;
   }
 }

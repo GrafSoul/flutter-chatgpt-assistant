@@ -6,6 +6,7 @@
         "Getx",
         "OPENAI",
         "RGBO",
-        "Schyler"
+        "Schyler",
+        "vsync"
     ]
 }

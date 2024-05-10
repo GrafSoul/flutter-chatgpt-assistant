@@ -18,10 +18,21 @@ class ChatPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () {
-              chatController.showBottomSheet(context);
+          // Use the controller's animation to make the mic blink
+          AnimatedBuilder(
+            animation: chatController.getOpacityAnimation(),
+            builder: (context, child) {
+              return Opacity(
+                opacity: chatController.isListening.value ? chatController.getOpacityAnimation().value : 1.0,
+                child: Obx(() => IconButton(
+                      icon: Icon(
+                        chatController.isListening.value ? Icons.mic : Icons.mic_off,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      onPressed: chatController.toggleListening,
+                    )),
+              );
             },
           ),
         ],
