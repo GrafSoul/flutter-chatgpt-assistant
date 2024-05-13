@@ -26,29 +26,16 @@ class MyApp extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          if (snapshot.hasData) {
-            return GetMaterialApp(
-              title: 'ChatGPT Assistant',
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                useMaterial3: true,
-              ),
-              initialRoute: Routes.CHAT,
-              getPages: AppPages.pages,
-            );
-          } else {
-            return GetMaterialApp(
-              title: 'ChatGPT Assistant',
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                useMaterial3: true,
-              ),
-              initialRoute: Routes.WELCOME,
-              getPages: AppPages.pages,
-            );
-          }
+          return GetMaterialApp(
+            title: 'ChatGPT Assistant',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            initialRoute: snapshot.hasData ? Routes.CHAT : Routes.WELCOME,
+            getPages: AppPages.pages,
+          );
         }
 
         return const Center(child: CircularProgressIndicator());
