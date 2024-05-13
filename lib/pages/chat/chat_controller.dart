@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -5,13 +6,17 @@ import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../routes/app_routes.dart';
+
 class ChatController extends GetxController with GetSingleTickerProviderStateMixin {
   final storage = GetStorage();
   final apiKey = ''.obs;
   late final OpenAI _openAI;
 
-  final ChatUser currentUser = ChatUser(id: '1', firstName: 'John', lastName: 'Doe');
-  final ChatUser gptChatUser = ChatUser(id: '2', firstName: 'Chat', lastName: 'GPT');
+  final ChatUser currentUser =
+      ChatUser(id: '1', firstName: 'John', lastName: 'Doe', profileImage: './assets/images/img_chat_robot.png');
+  final ChatUser gptChatUser =
+      ChatUser(id: '2', firstName: 'Chat', lastName: 'GPT', profileImage: './assets/images/img_chat_robot.png');
 
   var messages = <ChatMessage>[].obs;
   var typingUsers = <ChatUser>[].obs;
@@ -30,6 +35,18 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
   @override
   void onInit() {
     super.onInit();
+
+    final initialMessage = ChatMessage(
+      text: "Hello, I am your Assistant. Please ask me your questions and I will answer them.",
+      createdAt: DateTime.now(),
+      user: ChatUser(
+        firstName: 'Chat',
+        lastName: 'GPT',
+        profileImage: './assets/images/img_chat_robot.png',
+        id: "2",
+      ),
+    );
+    messages.add(initialMessage);
 
     animationController = AnimationController(
       vsync: this,
@@ -77,6 +94,9 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
         return Messages(role: Role.assistant, content: m.text);
       }
     }).toList();
+
+    stopListening();
+    animationController.stop();
 
     String getRoleString(Role role) {
       switch (role) {
@@ -192,5 +212,10 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
 
   Animation<double> getOpacityAnimation() {
     return opacityAnimation;
+  }
+
+  void logOut() async {
+    await FirebaseAuth.instance.signOut();
+    Get.offAllNamed(Routes.WELCOME);
   }
 }
