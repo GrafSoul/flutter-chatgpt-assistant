@@ -4,7 +4,7 @@ import 'package:flutter_chatgpt_assistant/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
+import 'firebase_options.dart';
 
 import '/routes/app_pages.dart';
 
@@ -20,8 +20,8 @@ void main() async {
   await GetStorage.init();
 
   await Firebase.initializeApp(
-      // options: DefaultFirebaseOptions.currentPlatform,
-      );
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   Get.put(AuthService());
   Get.put(UserService());
