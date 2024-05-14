@@ -1,6 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../../services/auth_service.dart';
 
 class SignUpController extends GetxController {
   final TextEditingController emailController = TextEditingController();
@@ -9,7 +12,7 @@ class SignUpController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   var isLoading = false.obs;
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  final AuthService _authService = Get.find<AuthService>();
 
   void signUp() async {
     if (emailController.text.isEmpty ||
@@ -27,16 +30,13 @@ class SignUpController extends GetxController {
 
     try {
       isLoading(true);
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
+      await _authService.signUp(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+        nameController.text.trim(),
       );
-      User? user = userCredential.user;
-      await user?.updateDisplayName(nameController.text.trim());
-      Get.snackbar("Успешно", "Регистрация прошла успешно", snackPosition: SnackPosition.TOP);
-      Get.offAll('/chat');
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar("Ошибка", e.message ?? "Неизвестная ошибка", snackPosition: SnackPosition.TOP);
+    } catch (e) {
+      print(e);
     } finally {
       isLoading(false);
     }
@@ -44,10 +44,10 @@ class SignUpController extends GetxController {
 
   @override
   void onClose() {
+    super.onClose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     nameController.dispose();
-    super.onClose();
   }
 }

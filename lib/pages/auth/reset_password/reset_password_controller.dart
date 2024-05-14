@@ -1,12 +1,15 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../../services/auth_service.dart';
 
 class ResetPasswordController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   var isLoading = false.obs;
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  final AuthService _authService = Get.find<AuthService>();
 
   void resetPassword() async {
     if (emailController.text.isEmpty) {
@@ -16,11 +19,9 @@ class ResetPasswordController extends GetxController {
 
     try {
       isLoading(true);
-      await auth.sendPasswordResetEmail(email: emailController.text.trim());
-      Get.snackbar("Успешно", "Ссылка для сброса пароля отправлена на ваш Email", snackPosition: SnackPosition.BOTTOM);
-      Get.offAll('/signin');
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar("Ошибка", e.message ?? "Неизвестная ошибка", snackPosition: SnackPosition.BOTTOM);
+      await _authService.resetPassword(emailController.text.trim());
+    } catch (e) {
+      print(e);
     } finally {
       isLoading(false);
     }
