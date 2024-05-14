@@ -1,0 +1,49 @@
+{
+    "welcome": {
+        "title": "Добро пожаловать!",
+        "subtitle": "Это приложение для общения с ChatGPT. Для начала войдите или зарегистрируйтесь.",
+        "signin": "Войти",
+        "sighup": "Зарегистрироваться"
+    },
+    "signup": {
+        "title": "Регистрация",
+        "name": "Имя пользователя",
+        "email": "Email",
+        "password": "Пароль",
+        "confirm_password": "Подтвердите пароль",       
+        "enter": "Зарегистрироваться",
+        "loading": "Загрузка...",
+        "error_empty_fields": "Все поля должны быть заполнены",
+        "error_passwords_not_match": "Пароль не совпадают",
+        "error": "Ошибка"
+    },
+    "signin": {
+        "title": "Вход",
+        "email": "Email",
+        "password": "Пароль",
+        "enter": "Войти", 
+        "loading": "Загрузка...",
+        "forgot_password": "Забыли пароль?",
+        "error": "Ошибка" ,  
+        "error_empty": "Email и пароль не могут быть пустыми"  
+    },
+
+    "reset_password": { 
+        "title": "Восстановление пароля",
+        "enter_email": "Введите Email адрес",
+        "sending": "Отправка...",
+        "send_email": "Отправить ссылку для сброса пароля",
+        "error": "Ошибка",
+        "error_entered_email": "Введите Email адрес"
+    },
+
+    "chat": {
+        "title": "Ассистент",
+        "text_field_placeholder": "Напишите сообщение...",
+        "enter_api_key": "Введите ключ API",
+        "api_key_placeholder": "Ключ API",
+        "save": "Сохранить",
+        "hi_message": "Здравствуйте, я ваш помощник. Пожалуйста, задавайте мне свои вопросы, и я отвечу на них."
+    }
+}
+

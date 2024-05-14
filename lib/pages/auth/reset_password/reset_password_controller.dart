@@ -13,7 +13,8 @@ class ResetPasswordController extends GetxController {
 
   void resetPassword() async {
     if (emailController.text.isEmpty) {
-      Get.snackbar("Ошибка", "Введите Email адрес", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar('reset_password_error'.tr, 'reset_password_error_entered_email'.tr,
+          snackPosition: SnackPosition.BOTTOM);
       return;
     }
 

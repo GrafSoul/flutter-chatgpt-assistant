@@ -19,12 +19,12 @@ class SignUpController extends GetxController {
         passwordController.text.isEmpty ||
         nameController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
-      Get.snackbar("Ошибка", "Все поля должны быть заполнены", snackPosition: SnackPosition.TOP);
+      Get.snackbar('signup_error'.tr, 'signup_error_empty_fields'.tr, snackPosition: SnackPosition.TOP);
       return;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
-      Get.snackbar("Ошибка", "Пароль не совпадают", snackPosition: SnackPosition.TOP);
+      Get.snackbar('signup_error'.tr, 'signup_error_passwords_not_match'.tr, snackPosition: SnackPosition.TOP);
       return;
     }
 

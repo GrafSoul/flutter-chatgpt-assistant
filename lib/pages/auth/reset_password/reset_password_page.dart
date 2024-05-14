@@ -10,7 +10,7 @@ class ResetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Восстановление пароля")),
+      appBar: AppBar(title: Text('reset_password_title'.tr)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Obx(() {
@@ -19,12 +19,12 @@ class ResetPasswordPage extends StatelessWidget {
               children: [
                 TextField(
                   controller: controller.emailController,
-                  decoration: const InputDecoration(labelText: 'Введите ваш Email'),
+                  decoration: InputDecoration(labelText: 'reset_password_enter_email'.tr),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                     onPressed: controller.isLoading.value ? null : controller.resetPassword,
-                    child: Text(controller.isLoading.value ? 'Отправка...' : 'Отправить ссылку для сброса')),
+                    child: Text(controller.isLoading.value ? 'Отправка...' : 'reset_password_send_email'.tr)),
               ],
             ),
           );

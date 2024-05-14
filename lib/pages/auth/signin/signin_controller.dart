@@ -14,9 +14,10 @@ class SignInController extends GetxController {
 
   void signIn() async {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      Get.snackbar("Ошибка", "Email и пароль не могут быть пустыми", snackPosition: SnackPosition.TOP);
+      Get.snackbar('signin_error'.tr, 'signin_error_empty'.tr, snackPosition: SnackPosition.TOP);
       return;
     }
+
     try {
       isLoading(true);
       await _authService.signIn(emailController.text.trim(), passwordController.text.trim());

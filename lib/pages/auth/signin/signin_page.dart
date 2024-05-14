@@ -10,7 +10,7 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Вход")),
+      appBar: AppBar(title: Text('welcome_title'.tr)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Obx(() {
@@ -19,17 +19,25 @@ class SignInPage extends StatelessWidget {
               children: [
                 TextField(
                   controller: controller.emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: 'signin_email'.tr),
                 ),
                 TextField(
                   controller: controller.passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Пароль'),
+                  decoration: InputDecoration(labelText: 'signin_password'.tr),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                    onPressed: controller.isLoading.value ? null : controller.signIn,
-                    child: Text(controller.isLoading.value ? 'Загрузка...' : 'Войти')),
+                  onPressed: controller.isLoading.value ? null : controller.signIn,
+                  child: Text(controller.isLoading.value ? 'signin_loading'.tr : 'signin_enter'.tr),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.toNamed('/reset-password');
+                  },
+                  child:
+                      Text('signin_forgot_password'.tr, style: const TextStyle(decoration: TextDecoration.underline)),
+                ),
               ],
             ),
           );

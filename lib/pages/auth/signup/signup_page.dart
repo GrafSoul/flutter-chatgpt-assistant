@@ -10,7 +10,7 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Регистрация")),
+      appBar: AppBar(title: Text('signup_title'.tr)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Obx(() {
@@ -19,26 +19,26 @@ class SignUpPage extends StatelessWidget {
               children: [
                 TextField(
                   controller: controller.nameController,
-                  decoration: const InputDecoration(labelText: 'Имя пользователя'),
+                  decoration: InputDecoration(labelText: 'signup_name'.tr),
                 ),
                 TextField(
                   controller: controller.emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(labelText: 'signup_email'.tr),
                 ),
                 TextField(
                   controller: controller.passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Пароль'),
+                  decoration: InputDecoration(labelText: 'signup_password'.tr),
                 ),
                 TextField(
                   controller: controller.confirmPasswordController,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Подтвердите пароль'),
+                  decoration: InputDecoration(labelText: 'signup_confirm_password'.tr),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                     onPressed: controller.isLoading.value ? null : controller.signUp,
-                    child: Text(controller.isLoading.value ? 'Загрузка...' : 'Зарегистрироваться')),
+                    child: Text(controller.isLoading.value ? 'signup_loading'.tr : 'signup_enter'.tr)),
               ],
             ),
           );

@@ -1,0 +1,49 @@
+{
+    "welcome": {
+        "title": "Welcome!",
+        "subtitle": "This is an application for chatting with ChatGPT. To get started, log in or register.",
+        "signin": "Login",
+        "sighup": "Register"
+    },
+    "signup": {
+        "title": "Registration",
+        "name": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirm_password": "Confirm password",
+        "enter": "Register",
+        "loading": "Loading...",
+        "error": "Error",
+        "error_empty_fields": "All fields must be filled in",
+        "error_passwords_not_match": "Passwords do not match"
+    },
+    "signin": {
+        "title": "Login",
+        "email": "Email",
+        "password": "Password",
+        "enter": "Login",
+        "loading": "Loading...",
+        "forgot_password": "Forgot your password?",
+        "error": "Error",
+        "error_empty": "Email and password cannot be empty"
+    },
+
+    "reset_password": {
+        "title": "Password recovery",
+        "enter_email": "Enter your Email address",
+        "sending": "Sending...",
+        "send_email": "Send password reset link",
+        "error": "Error",
+        "error_entered_email": "Enter Email Address"
+    },
+
+    "chat": {
+        "title": "Assistant",
+        "text_field_placeholder": "Write a message...",
+        "enter_api_key": "Enter API Key",
+        "api_key_placeholder": "API Key",
+        "save": "Save",
+        "hi_message": "Hello, I am your Assistant. Please ask me your questions and I will answer them."
+    }
+}
+
