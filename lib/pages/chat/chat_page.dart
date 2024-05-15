@@ -33,6 +33,17 @@ class ChatPage extends StatelessWidget {
               Get.toNamed('/profile');
             },
           ),
+          Obx(() {
+            if (chatController.userData['role'] == 'admin') {
+              return IconButton(
+                icon: const Icon(Icons.people, color: Colors.white),
+                onPressed: () {
+                  Get.toNamed('/users');
+                },
+              );
+            }
+            return const SizedBox.shrink();
+          }),
           IconButton(
             icon: const Icon(Icons.exit_to_app, color: Colors.white),
             onPressed: () {

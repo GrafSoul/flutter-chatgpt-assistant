@@ -9,22 +9,20 @@ import 'firebase_options.dart';
 import '/routes/app_pages.dart';
 
 import '/services/auth_service.dart';
-import '/services/user_service.dart';
+import '/services/users_service.dart';
 import '/services/chat_service.dart';
 
 import 'generated/locales.g.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   await GetStorage.init();
-
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   Get.put(AuthService());
-  Get.put(UserService());
+  Get.put(UsersService());
   Get.put(ChatService());
 
   runApp(const MyApp());

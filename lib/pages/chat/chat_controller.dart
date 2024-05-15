@@ -10,6 +10,9 @@ import '../../routes/app_routes.dart';
 
 class ChatController extends GetxController with GetSingleTickerProviderStateMixin {
   final storage = GetStorage();
+
+  RxMap<dynamic, dynamic> userData = RxMap<dynamic, dynamic>();
+
   final apiKey = ''.obs;
   late final OpenAI _openAI;
 
@@ -71,11 +74,16 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
   }
 
   @override
+  void onReady() {
+    userData.value = storage.read('userData');
+    super.onReady();
+  }
+
+  @override
   void onClose() {
-    super.onClose();
-    // Dispose animation controller
     animationController.dispose();
     textController.dispose();
+    super.onClose();
   }
 
   void saveApiKey(String key) {

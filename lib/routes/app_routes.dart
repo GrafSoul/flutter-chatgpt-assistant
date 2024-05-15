@@ -7,4 +7,5 @@ abstract class Routes {
   static const RESET_PASSWORD = '/reset-password';
   static const CHAT = '/chat';
   static const PROFILE = '/profile';
+  static const USERS = '/users';
 }

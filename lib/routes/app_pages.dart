@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../pages/welcome/welcome_page.dart';
 import '../pages/chat/chat_page.dart';
 import '../pages/profile/profile_page.dart';
+import '../pages/users/users_page.dart';
 import '../pages/auth/signup/signup_page.dart';
 import '../pages/auth/signin/signin_page.dart';
 import '../pages/auth/reset_password/reset_password_page.dart';
@@ -12,6 +13,7 @@ import '../pages/auth/signin/signin_binding.dart';
 import '../pages/auth/reset_password/reset_password_binding.dart';
 import '../pages/chat/chat_binding.dart';
 import '../pages/profile/profile_binding.dart';
+import '../pages/users/users_binding.dart';
 
 import 'app_routes.dart';
 
@@ -45,6 +47,11 @@ class AppPages {
       name: Routes.PROFILE,
       page: () => const ProfilePage(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: Routes.USERS,
+      page: () => const UsersPage(),
+      binding: UsersBinding(),
     ),
   ];
 }
