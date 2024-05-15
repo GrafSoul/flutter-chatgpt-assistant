@@ -28,6 +28,12 @@ class ChatPage extends StatelessWidget {
             },
           ),
           IconButton(
+            icon: const Icon(Icons.account_circle, color: Colors.white),
+            onPressed: () {
+              Get.toNamed('/profile');
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.exit_to_app, color: Colors.white),
             onPressed: () {
               chatController.logOut();
