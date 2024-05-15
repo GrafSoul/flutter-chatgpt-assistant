@@ -10,6 +10,7 @@ import '/routes/app_pages.dart';
 
 import '/services/auth_service.dart';
 import '/services/users_service.dart';
+import '/services/profile_service.dart';
 import '/services/chat_service.dart';
 
 import 'generated/locales.g.dart';
@@ -23,6 +24,7 @@ void main() async {
 
   Get.put(AuthService());
   Get.put(UsersService());
+  Get.put(ProfileService());
   Get.put(ChatService());
 
   runApp(const MyApp());

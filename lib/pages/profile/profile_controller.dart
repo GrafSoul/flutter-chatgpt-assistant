@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_storage/get_storage.dart';
+import '../../services/profile_service.dart';
 
 class ProfileController extends GetxController {
   Rxn<User> firebaseUser = Rxn<User>();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GetStorage _storage = GetStorage();
+
   RxMap<dynamic, dynamic> userData = RxMap<dynamic, dynamic>();
 
   final TextEditingController nameController = TextEditingController();
@@ -15,6 +17,8 @@ class ProfileController extends GetxController {
   final TextEditingController currentPasswordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmNewPasswordController = TextEditingController();
+
+  final ProfileService _profileService = Get.find<ProfileService>();
 
   @override
   void onInit() {
@@ -38,37 +42,25 @@ class ProfileController extends GetxController {
     super.onClose();
   }
 
-  void updateUserName(String name) async {
-    try {
-      await firebaseUser.value!.updateDisplayName(name);
-      Get.snackbar('Успешно', 'Имя пользователя было изменено');
-      update();
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to update name: $e');
-    }
+  void updateUserName(String name) {
+    _profileService.updateUserName(name).then((success) {
+      if (success) {
+        userData['name'] = name;
+        userData.refresh();
+      }
+    });
   }
 
-  void updateUserEmail(String email) async {
-    try {
-      await firebaseUser.value!.verifyBeforeUpdateEmail(email);
-      Get.snackbar('Успешно', 'Email пользователя был изменен');
-      update();
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to update email: $e');
-    }
+  void updateUserEmail(String email) {
+    _profileService.updateUserEmail(email).then((success) {
+      if (success) {
+        userData['email'] = email;
+        userData.refresh();
+      }
+    });
   }
 
-  void updateUserPassword(String currentPassword, String newPassword) async {
-    try {
-      UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(email: firebaseUser.value!.email!, password: currentPassword);
-      userCredential.user!.updatePassword(newPassword).then((_) {
-        Get.snackbar('Success', 'Password successfully changed');
-      }).catchError((error) {
-        Get.snackbar('Error', 'Failed to change password: $error');
-      });
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to verify user: $e');
-    }
+  void updateUserPassword(String currentPassword, String newPassword) {
+    _profileService.updateUserPassword(currentPassword, newPassword);
   }
 }
