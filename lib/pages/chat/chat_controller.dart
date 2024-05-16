@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +16,7 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
   RxMap<dynamic, dynamic> userData = RxMap<dynamic, dynamic>();
 
   final apiKey = ''.obs;
-  late final OpenAI _openAI;
+  OpenAI? _openAI;
 
   final ChatUser currentUser =
       ChatUser(id: '1', firstName: 'John', lastName: 'Doe', profileImage: './assets/images/img_chat_robot.png');
@@ -90,13 +92,17 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
     apiKey.value = key;
     storage.write('apiKey', key.toString());
 
-    _openAI = OpenAI.instance.build(
-      token: apiKey.value,
-      baseOption: HttpSetup(
-        receiveTimeout: const Duration(seconds: 5),
-      ),
-      enableLog: true,
-    );
+    if (_openAI == null) {
+      _openAI = OpenAI.instance.build(
+        token: apiKey.value,
+        baseOption: HttpSetup(
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+        enableLog: true,
+      );
+    } else {
+      print("Field '_openAI' is already initialized");
+    }
   }
 
   Future<void> sendMessage(ChatMessage m) async {
@@ -135,7 +141,7 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
       maxToken: 200,
     );
 
-    final response = await _openAI.onChatCompletion(request: request);
+    final response = await _openAI!.onChatCompletion(request: request); // Используем null-safe вызов
 
     for (var element in response!.choices) {
       if (element.message != null) {
