@@ -89,6 +89,14 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
   void saveApiKey(String key) {
     apiKey.value = key;
     storage.write('apiKey', key.toString());
+
+    _openAI = OpenAI.instance.build(
+      token: apiKey.value,
+      baseOption: HttpSetup(
+        receiveTimeout: const Duration(seconds: 5),
+      ),
+      enableLog: true,
+    );
   }
 
   Future<void> sendMessage(ChatMessage m) async {

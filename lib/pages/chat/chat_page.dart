@@ -126,11 +126,10 @@ class ChatPage extends StatelessWidget {
 }
 
 class ApiKeyInputDialog extends StatelessWidget {
-  final ChatController chatController = Get.put(ChatController());
-
+  final ChatController chatController;
   final TextEditingController textController;
 
-  ApiKeyInputDialog(chatController, {super.key})
+  ApiKeyInputDialog(this.chatController, {super.key})
       : textController = TextEditingController(text: chatController.apiKey.value);
 
   @override
