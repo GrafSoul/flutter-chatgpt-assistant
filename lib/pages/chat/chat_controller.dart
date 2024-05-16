@@ -141,8 +141,7 @@ class ChatController extends GetxController with GetSingleTickerProviderStateMix
       maxToken: 200,
     );
 
-    final response = await _openAI!.onChatCompletion(request: request); // Используем null-safe вызов
-
+    final response = await _openAI!.onChatCompletion(request: request);
     for (var element in response!.choices) {
       if (element.message != null) {
         messages.insert(
