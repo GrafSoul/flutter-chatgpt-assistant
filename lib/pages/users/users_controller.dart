@@ -1,33 +1,15 @@
-// user_controller.dart
 // ignore_for_file: avoid_print
 
 import 'package:get/get.dart';
-import 'package:firebase_database/firebase_database.dart';
+import '../../services/users_service.dart';
 
 class UsersController extends GetxController {
-  RxList<dynamic> usersList = RxList<dynamic>();
+  RxList<Map<String, dynamic>> usersList = RxList<Map<String, dynamic>>();
+  final UsersService usersService = Get.put(UsersService());
 
   @override
   void onInit() {
-    usersList.bindStream(listenToUsers());
+    usersList.bindStream(usersService.listenToUsers());
     super.onInit();
-  }
-
-  Stream<List<dynamic>> listenToUsers() {
-    return FirebaseDatabase.instance.ref('users').onValue.map((event) {
-      final userList = <dynamic>[];
-      final data = event.snapshot.value as Map<dynamic, dynamic>?;
-      if (data != null) {
-        data.forEach((key, value) {
-          userList.add(value as Map<dynamic, dynamic>);
-        });
-      } else {
-        print("Error: No data found");
-      }
-      return userList;
-    }).handleError((error) {
-      print("Error: $error");
-      return [];
-    });
   }
 }

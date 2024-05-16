@@ -30,9 +30,9 @@ class UsersPage extends GetView<UsersController> {
           itemBuilder: (context, index) {
             var user = usersController.usersList[index];
             return ListTile(
-              title: Text('Name: ${user['name'] ?? 'No name provided'} - Role: ${user['role'] ?? 'No role provided'}'),
-              subtitle: Text('${user['email'] ?? 'No email provided'}'),
-              trailing: const Icon(Icons.arrow_forward),
+              title: Text('Name: ${user['name'] ?? 'No name provided'}'),
+              subtitle: Text('Email: ${user['email'] ?? 'No email provided'}'),
+              trailing: Text('${user['role'] ?? 'No role provided'}'),
             );
           },
         );
